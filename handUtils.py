@@ -1,15 +1,18 @@
 import cv2
 import math
+import numpy as np
+
+close_kernel = np.ones((2, 2), np.uint8)
 
 def mask(region):
 
     if len(region) != 0:
-        # Performing grayscale conversion, gaussian-blur, OTSU-Thresholding
-        print(region)
+        # Performing grayscale conversion, gaussian-blur, thresholding and close_morph to close inner noise, minimizing noise
         try:
             gray = cv2.cvtColor(region, cv2.COLOR_RGB2GRAY)
             blur = cv2.GaussianBlur(gray, (5, 5), 0)
             mask = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)[1]
+            mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, close_kernel)
             return mask
         except:
             return None
@@ -20,7 +23,7 @@ def find_max_contour(region):
     
     if len(contours) != 0:
 
-        #Find largest contour    
+        # Find largest contour    
         cMax = max(contours, key=cv2.contourArea)
 
         return cMax
