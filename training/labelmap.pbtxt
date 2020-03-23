@@ -1,0 +1,39 @@
+item{
+    id: 1
+    name: 'palm'
+}
+
+item{
+    id: 2
+    name: 'fist'
+}
+
+item{
+    id: 3
+    name: 'peace'
+}
+
+item{
+    id: 4
+    name: 'three'
+}
+
+item{
+    id: 5
+    name: 'super'
+}
+
+item{
+    id: 6
+    name: 'spider'
+}
+
+item{
+    id: 7
+    name: 'ok'
+}
+
+item{
+    id: 8
+    name: 'one'
+}
