@@ -90,6 +90,7 @@ video = cv2.VideoCapture('http://192.168.1.3:4747/mjpegfeed')
 ret = video.set(3,1280)
 ret = video.set(4,720)
 
+
 while(True):
 
     # Acquire frame and expand frame dimensions to have shape: [1, None, None, 3]
@@ -103,8 +104,9 @@ while(True):
         [detection_boxes, detection_scores, detection_classes, num_detections],
         feed_dict={image_tensor: frame_expanded})
 
+
     # Draw the results of the detection (aka 'visulaize the results')
-    vis_util.visualize_boxes_and_labels_on_image_array(
+    frame, gestures = vis_util.visualize_boxes_and_labels_on_image_array(
         frame,
         np.squeeze(boxes),
         np.squeeze(classes).astype(np.int32),
@@ -121,7 +123,7 @@ while(True):
     if cv2.waitKey(1) == ord('q'):
         break
 
+
 # Clean up
 video.release()
 cv2.destroyAllWindows()
-
