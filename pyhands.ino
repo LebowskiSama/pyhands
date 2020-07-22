@@ -1,26 +1,56 @@
+int state;
+
 void setup()
 {
-  pinMode(LED_BUILTIN, OUTPUT);
+  pinMode(11, OUTPUT);
   Serial.begin(9600);
-  Serial.setTimeout(-1);
 }
 
 void loop()
 {
-  long state;
 
-  if(Serial.available() > 0)
+  if(Serial.available())
   {
     state = Serial.parseInt();
-  }
-    if(state == 0)
-    {
-      digitalWrite(LED_BUILTIN, LOW);
-    }
     
-    else if(state == 1)
+    switch(state)
     {
-      digitalWrite(LED_BUILTIN, HIGH);
-    }
+      case 0:
+        digitalWrite(11, LOW);
+        break;
 
+      case 1:
+        digitalWrite(11, HIGH);
+        break;
+
+      case 2:
+        for(int i=0; i < 5; i++)
+        {
+          digitalWrite(11, LOW);
+          delay(100);
+          digitalWrite(11, HIGH);
+          delay(100);
+        }
+          break;
+
+      case 3:
+        for(int i=0; i<3; i++)
+        {
+          for(int j=0; j < 255; j++)
+          {
+            analogWrite(11, j);
+            delay(3);
+          }
+          delay(3);
+          for(int k=255; k > 0; k--)
+          {
+            analogWrite(11, k);
+            delay(3);
+          }
+        }
+          break;
+      
+    }
+  }
+  delay(1);
 }

@@ -52,7 +52,7 @@ detection_classes = detection_graph.get_tensor_by_name('detection_classes:0')
 num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 
 # Initialize webcam feed
-video = cv2.VideoCapture(0)
+video = cv2.VideoCapture("192.168.1.3/4747")
 ret = video.set(3,1280)
 ret = video.set(4,720)
 

@@ -1,20 +1,3 @@
-######## Webcam Object Detection Using Tensorflow-trained Classifier #########
-#
-# Author: Evan Juras
-# Date: 1/20/18
-# Description: 
-# This program uses a TensorFlow-trained classifier to perform object detection.
-# It loads the classifier and uses it to perform object detection on a webcam feed.
-# It draws boxes, scores, and labels around the objects of interest in each frame
-# from the webcam.
-
-## Some of the code is copied from Google's example at
-## https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
-
-## and some is copied from Dat Tran's example at
-## https://github.com/datitran/object_detector_app/blob/master/object_detection_app.py
-
-# Import packages
 import os
 import cv2
 import numpy as np
@@ -22,12 +5,10 @@ import tensorflow as tf
 import sys
 import serial
 
-uno = serial.Serial('/dev/ttyACM0', 9600)
+# uno = serial.Serial('/dev/ttyACM0', 9600)
+uno = serial.Serial('COM3', 9600)
 
-# This is needed since the notebook is stored in the object_detection folder.
-sys.path.append("..")
-
-# Import utilites
+# Import model utilities
 from utils import label_map_util
 from utils import visualization_utils as vis_util
 
@@ -46,8 +27,7 @@ PATH_TO_LABELS = os.path.join(CWD_PATH,'training','labelmap.pbtxt')
 # Number of classes the object detector can identify
 NUM_CLASSES = 8
 
-# Here we use internal utility functions, but anything that returns a
-# dictionary mapping integers to appropriate string labels would be fine
+# Using internal utility functions to grade
 label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
 category_index = label_map_util.create_category_index(categories)
@@ -83,11 +63,13 @@ num_detections = detection_graph.get_tensor_by_name('num_detections:0')
 
 # Initialize webcam feed
 video = cv2.VideoCapture('http://192.168.1.3:4747/mjpegfeed')
-ret = video.set(3,1280)
-ret = video.set(4,720)
+ret = video.set(3,800)
+ret = video.set(4,600)
 
+# Global state to perform async actions and monitor state
+newState = ""
 
-while(True):
+while True:
 
     # Expand frame to [1, None, None, 3], to make it model friendly
     ret, frame = video.read()
@@ -102,25 +84,29 @@ while(True):
     cv2.imshow('Object detector', frame)
 
     # Interface with anything, in this case, an uno
-
     if len(gestures) != 0:
 
         state = gestures[0]
 
-        if state == 'fist':
-            uno.write(0)
-        if state == 'palm':
-            uno.write(1)
-        if state == 'ok':
-            uno.write(2)
-        if state == 'spider':
-            uno.write(3)
-        if state == 'peace':
-            uno.write(4)
+        if state != newState:
+            if state == 'fist':
+                uno.write(b'0')
+            if state == 'palm':
+                uno.write(b'1')
+            if state == 'peace':
+                uno.write(b'2')
+            if state == 'spider':
+                uno.write(b'3')
+            # if state == 'ok':
+            #     print()
+            
+        # Update global state
+        newState = state
+        state = gestures[0]
+        # gestures.clear()
 
-    if cv2.waitKey(1) == ord('q'):
-        break
-
+        if cv2.waitKey(1) == ord('q'):
+            break
 
 video.release()
 cv2.destroyAllWindows()
