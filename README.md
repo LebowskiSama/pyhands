@@ -31,4 +31,4 @@ These can further be modded over at label_map.pbtxt in the training folder.
 * https://github.com/EdjeElectronics
 * https://github.com/datitran  
 
-For contributing towards this project either directly or indirectly.
+For contributing towards this project indirectly.
